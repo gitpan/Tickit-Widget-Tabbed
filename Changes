@@ -1,4 +1,8 @@
 Revision history for Tickit-Widget-Tabbed
 
+0.002     2011-11-26 13:48:42 Europe/London
+Bugfix: remember to activate the initial tab immediately if we already have a
+  window.
+
 0.001     2011-10-21 22:03:32 Europe/London
 Initial CPAN release

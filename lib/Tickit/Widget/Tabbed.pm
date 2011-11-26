@@ -9,7 +9,7 @@ use Tickit::Pen;
 use Tickit::Utils qw(textwidth);
 use List::Util qw(max);
 
-our $VERSION = 0.001;
+our $VERSION = 0.002;
 
 =head1 NAME
 
@@ -17,7 +17,7 @@ Tickit::Widget::Tabbed - provide tabbed window support
 
 =head1 VERSION
 
-version 0.001
+version 0.002
 
 =head1 SYNOPSIS
 
@@ -310,6 +310,11 @@ sub add_tab {
 
 	push @{$self->{tabs}}, my $tab = Tickit::Widget::Tabbed::Tab->new( $self, widget => $child, %opts );
 	$self->_tabs_changed;
+
+	if(@{$self->{tabs}} == 1 and my $child_window = $self->child_window) {
+		$tab->_activate;
+		$child->set_window($child_window);
+	}
 	return $tab;
 }
 

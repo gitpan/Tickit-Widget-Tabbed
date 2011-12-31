@@ -25,3 +25,4 @@ t/14-input-vertical.t
 t/20-tabs.t
 t/21-tab-activate.t
 t/22-tabs-late.t
+t/23-tab-subclass.t

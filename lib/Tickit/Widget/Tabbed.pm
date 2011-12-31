@@ -9,7 +9,7 @@ use Tickit::Pen;
 use Tickit::Utils qw(textwidth);
 use List::Util qw(max);
 
-our $VERSION = 0.002;
+our $VERSION = 0.003;
 
 =head1 NAME
 
@@ -42,6 +42,8 @@ sub lines { 1 }
 
 sub cols { shift->label_width + 1 }
 
+sub TAB_CLASS { shift->{tab_class} || "Tickit::Widget::Tabbed::Tab" }
+
 # Don't need to implement this as rendering is done by the child or the tab
 # window using its expose event
 sub render { }
@@ -70,8 +72,9 @@ sub new {
 	my $self = $class->SUPER::new;
 	$self->{tabs} = [];
 	$self->{active_tab_index} = 0;
-	$self->{pen_tabs}   = delete($args{pen_tabs})   || Tickit::Pen->new( bg => 4, fg => 7 );
+	$self->{pen_tabs}   = delete($args{pen_tabs})	|| Tickit::Pen->new( bg => 4, fg => 7 );
 	$self->{pen_active} = delete($args{pen_active}) || Tickit::Pen->new( fg => 14 );
+	$self->{tab_class}  = delete($args{tab_class});
 
 	$_->add_on_changed($self, "tab") for $self->pen_tabs, $self->pen_active;
 
@@ -179,7 +182,7 @@ sub tab_position {
 	if(@_) {
 		my $pos = shift;
 		$self->{orientation} = ( $pos eq "top" or $pos eq "bottom" ) ? "horizontal" :
-		                       ( $pos eq "left" or $pos eq "right" ) ? "vertical" :
+				       ( $pos eq "left" or $pos eq "right" ) ? "vertical" :
 				       croak "Unrecognised value for ->tab_position: $pos";
 		$self->{tab_position} = $pos;
 		$self->tab->set_window(undef) if $self->tab;
@@ -308,7 +311,7 @@ sub add_tab {
 	my $self = shift;
 	my ($child, %opts) = @_;
 
-	push @{$self->{tabs}}, my $tab = Tickit::Widget::Tabbed::Tab->new( $self, widget => $child, %opts );
+	push @{$self->{tabs}}, my $tab = $self->TAB_CLASS->new( $self, widget => $child, %opts );
 	$self->_tabs_changed;
 
 	if(@{$self->{tabs}} == 1 and my $child_window = $self->child_window) {
@@ -623,6 +626,43 @@ sub on_pen_changed {
 1;
 
 __END__
+
+=head1 CUSTOM TAB CLASS
+
+Rather than use the default built-in object class for tab objects, a
+C<Tickit::Widget::Tabbed> or subclass thereof can return objects in another
+class instead. This is most useful for subclasses of the tabbed widget itself.
+
+To perform this, create a subclass of C<Tickit::Widget::Tabbed::Tab> with a
+constructor having the following behaviour:
+
+ sub new
+ {
+	 my $class = shift;
+	 my ( $tabbed, %args ) = @_;
+
+	 ...
+
+	 my $self = $class->SUPER::new( $tabbed, %args );
+
+	 ...
+
+	 return $self;
+ }
+
+Arrange for this class to be used by the tabbed widget either by passing its
+name as a constructor argument called C<tab_class>, or by overriding a method
+called C<TAB_CLASS>.
+
+ my $tabbed = Tickit::Widget::Tabbed->new(
+	 tab_class => "Tab::Class::Name"
+ );
+
+or
+
+ use constant TAB_CLASS => "Tab::Class::Name";
+
+=cut
 
 =head1 SEE ALSO
 

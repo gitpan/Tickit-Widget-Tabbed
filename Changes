@@ -1,5 +1,8 @@
 Revision history for Tickit-Widget-Tabbed
 
+0.003     2011-12-31 01:34:18 Europe/London
+Added ability to build subclasses of tab objects
+
 0.002     2011-11-26 13:48:42 Europe/London
 Bugfix: remember to activate the initial tab immediately if we already have a
   window.

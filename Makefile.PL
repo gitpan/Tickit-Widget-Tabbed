@@ -32,7 +32,7 @@ my %WriteMakefileArgs = (
     "Tickit::Widget" => "0.12",
     "parent" => 0
   },
-  "VERSION" => "0.002",
+  "VERSION" => "0.003",
   "test" => {
     "TESTS" => "t/*.t"
   }

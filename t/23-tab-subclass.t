@@ -6,6 +6,7 @@ use Test::More tests => 2;
 
 use Tickit::Test;
 
+use Tickit::Widget::Static;
 use Tickit::Widget::Tabbed;
 
 my $widget = Tickit::Widget::Tabbed->new(
@@ -14,7 +15,7 @@ my $widget = Tickit::Widget::Tabbed->new(
 );
 
 my $tab = $widget->add_tab(
-        undef,
+        Tickit::Widget::Static->new( text => "" ),
         label => "newtab",
         custom_attr => 123,
 );

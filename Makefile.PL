@@ -30,9 +30,10 @@ my %WriteMakefileArgs = (
     "List::Util" => 0,
     "Scalar::Util" => 0,
     "Tickit::Widget" => "0.12",
+    "Tickit::Window" => "0.17",
     "parent" => 0
   },
-  "VERSION" => "0.003",
+  "VERSION" => "0.004",
   "test" => {
     "TESTS" => "t/*.t"
   }

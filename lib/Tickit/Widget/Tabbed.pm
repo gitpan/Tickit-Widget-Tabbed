@@ -9,7 +9,7 @@ use Tickit::Pen;
 use Tickit::Utils qw(textwidth);
 use List::Util qw(max);
 
-our $VERSION = 0.003;
+our $VERSION = '0.004';
 
 =head1 NAME
 
@@ -101,12 +101,6 @@ sub label_width {
 	return 2 + max(0, map { textwidth($_->label) } @{$self->{tabs}});
 }
 
-=head2 child_window
-
-Returns the child window.
-
-=cut
-
 # Positions for the four screen edges - these will return appropriate sizes
 # for the tab and child subwindows
 sub _window_position_left {
@@ -145,19 +139,30 @@ sub reshape {
 		$self->{tab_window} = $window->make_sub( @positions[0..3] );
 		$self->{tab_window}->set_on_expose(sub { $self->_expose_tabs(@_) });
 	}
-	if( $self->{child_window} ) {
-		$self->{child_window}->change_geometry( @positions[4..7] );
-	}
-	else {
-		$self->{child_window} = $window->make_sub( @positions[4..7] );
-		$self->tab->set_window($self->{child_window}) if $self->tab;
+	$self->{child_window_geometry} = [ @positions[4..7] ];
+	foreach my $tab ( @{$self->{tabs}} ) {
+		my $child = $tab->widget;
+		if( my $child_window = $child->window ) {
+			$child_window->change_geometry( @positions[4..7] );
+		}
+		else {
+			$child_window = $self->_new_child_window( $child == $self->active_tab->widget );
+			$child->set_window($child_window);
+		}
 	}
 }
 
-sub child_window {
+sub _new_child_window
+{
 	my $self = shift;
-	$self->reshape;
-	return $self->{child_window};
+	my ( $visible ) = @_;
+
+	my $window = $self->window or return undef;
+
+	my $child_window = $window->make_sub( @{ $self->{child_window_geometry} } );
+	$child_window->hide unless $visible;
+
+	return $child_window;
 }
 
 sub window_lost {
@@ -165,7 +170,7 @@ sub window_lost {
 	$self->SUPER::window_lost(@_);
 	$_->widget->set_window(undef) for @{$self->{tabs}};
 
-	undef $self->{child_window};
+	undef $self->{child_window_geometry};
 
 	$self->{tab_window}->set_on_expose(undef);
 	undef $self->{tab_window};
@@ -185,8 +190,7 @@ sub tab_position {
 				       ( $pos eq "left" or $pos eq "right" ) ? "vertical" :
 				       croak "Unrecognised value for ->tab_position: $pos";
 		$self->{tab_position} = $pos;
-		$self->tab->set_window(undef) if $self->tab;
-		delete $self->{child_window};
+		undef $self->{child_window_geometry};
 
 		$self->reshape if $self->window;
 		$self->redraw;
@@ -312,12 +316,12 @@ sub add_tab {
 	my ($child, %opts) = @_;
 
 	push @{$self->{tabs}}, my $tab = $self->TAB_CLASS->new( $self, widget => $child, %opts );
+
 	$self->_tabs_changed;
 
-	if(@{$self->{tabs}} == 1 and my $child_window = $self->child_window) {
-		$tab->_activate;
-		$child->set_window($child_window);
-	}
+	# Child is visible if it's the first one
+	$child->set_window($self->_new_child_window(@{$self->{tabs}} == 1));
+
 	return $tab;
 }
 
@@ -401,14 +405,12 @@ sub activate_tab {
 	my $self = shift;
 	my $new_index = $self->_tab2index( shift );
 
-# Remember the child window if we have one
-	my $win = $self->tab ? $self->tab->window : undef;
-	$win ||= $self->child_window;
-	$self->tab->set_window(undef) if $self->tab;
-
 	return $self if $new_index == $self->{active_tab_index};
 
-	$self->active_tab->_deactivate;
+	if($self->tab) {
+		$self->tab->window->hide if $self->tab->window;
+		$self->active_tab->_deactivate;
+	}
 
 	$self->{active_tab_index} = $new_index;
 
@@ -416,11 +418,10 @@ sub activate_tab {
 
 	if($self->tab) {
 		$self->active_tab->_activate;
-		$self->tab->set_window($win);
-		$self->tab->redraw;
+		$self->tab->window->show if $self->tab->window;
 	}
 	else {
-		$win->clear;
+		$self->window->clear;
 	}
 
 	return $self;

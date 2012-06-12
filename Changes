@@ -1,5 +1,9 @@
 Revision history for Tickit-Widget-Tabbed
 
+0.004     2012-06-12 09:50:32 Europe/London
+Use Tickit 0.17's hidden windows to give every child a window with all but one
+  hidden, rather than only one child having a window.
+
 0.003     2011-12-31 01:34:18 Europe/London
 Added ability to build subclasses of tab objects
 

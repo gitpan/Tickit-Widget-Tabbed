@@ -24,6 +24,6 @@ $widget->add_tab( Tickit::Widget::Static->new( text => "Late widget" ), label =>
 
 flush_tickit;
 
-is_display( [ [TEXT("Late tab",fg=>14,bg=>4), TEXT(" ",fg=>7,bg=>4), TEXT("",bg=>4)],
+is_display( [ [TEXT("[",fg=>7,bg=>4), TEXT("Late tab",fg=>14,bg=>4), TEXT("]",fg=>7,bg=>4), TEXT("",bg=>4)],
               [TEXT("Late widget")] ],
             'Display after ->add_tab' );

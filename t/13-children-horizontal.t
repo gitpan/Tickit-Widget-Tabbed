@@ -20,7 +20,7 @@ $widget->set_window( $win );
 
 flush_tickit;
 
-is_display( [ [TEXT("tab",fg=>14,bg=>4), TEXT(" ",fg=>7,bg=>4), TEXT("",bg=>4)],
+is_display( [ [TEXT("[",fg=>7,bg=>4), TEXT("tab",fg=>14,bg=>4), TEXT("]",fg=>7,bg=>4), TEXT("",bg=>4)],
               [TEXT("")] ],
             'Display initially' );
 
@@ -28,7 +28,7 @@ $vbox->add( Tickit::Widget::Static->new( text => "Static" ) );
 
 flush_tickit;
 
-is_display( [ [TEXT("tab",fg=>14,bg=>4), TEXT(" ",fg=>7,bg=>4), TEXT("",bg=>4)],
+is_display( [ [TEXT("[",fg=>7,bg=>4), TEXT("tab",fg=>14,bg=>4), TEXT("]",fg=>7,bg=>4), TEXT("",bg=>4)],
               [TEXT("Static")] ],
             'Display after $vbox->add' );
 
@@ -36,7 +36,7 @@ $vbox->add( Tickit::Widget::Static->new( text => "More static" ) );
 
 flush_tickit;
 
-is_display( [ [TEXT("tab",fg=>14,bg=>4), TEXT(" ",fg=>7,bg=>4), TEXT("",bg=>4)],
+is_display( [ [TEXT("[",fg=>7,bg=>4), TEXT("tab",fg=>14,bg=>4), TEXT("]",fg=>7,bg=>4), TEXT("",bg=>4)],
               [TEXT("Static")],
               [TEXT("More static")] ],
             'Display after $vbox->add again' );

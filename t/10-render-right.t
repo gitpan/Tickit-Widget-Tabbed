@@ -95,14 +95,7 @@ $widget->add_tab( Tickit::Widget::Static->new( text => "Another static" ), label
 
 flush_tickit;
 
-is_termlog( [ GOTO(0,0),
-              SETPEN,
-              PRINT("Widget 1"),
-              SETBG(undef),
-              ERASECH(64),
-              ( map { GOTO($_,0), SETBG(undef), ERASECH(72) } 1 .. 24 ),
-
-              GOTO(0,72),
+is_termlog( [ GOTO(0,72),
               SETPEN(fg => 7,bg => 4),
               PRINT("    "),
               SETPEN(fg => 7,bg => 4),
@@ -122,7 +115,14 @@ is_termlog( [ GOTO(0,0),
               PRINT("  "),
               SETPEN(fg => 7,bg => 4),
               PRINT("newtab"),
-              ( map { GOTO($_,72), SETBG(4), ERASECH(8) } 4 .. 24 ) ],
+              ( map { GOTO($_,72), SETBG(4), ERASECH(8) } 4 .. 24 ),
+      
+              GOTO(0,0),
+              SETPEN,
+              PRINT("Widget 1"),
+              SETBG(undef),
+              ERASECH(64),
+              ( map { GOTO($_,0), SETBG(undef), ERASECH(72) } 1 .. 24 ) ],
             'Termlog after ->add_tab' );
 
 is_display( [ [TEXT("Widget 1"), BLANK(64), TEXT("    tab0",fg=>7,bg=>4)],

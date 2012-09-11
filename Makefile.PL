@@ -18,6 +18,7 @@ my %WriteMakefileArgs = (
     "Tickit::Test" => "0.12",
     "Tickit::Widget::Static" => 0,
     "Tickit::Widget::VBox" => 0,
+    "Tickit::Window" => "0.20",
   },
   "CONFIGURE_REQUIRES" => {
     "ExtUtils::MakeMaker" => "6.30"
@@ -30,10 +31,11 @@ my %WriteMakefileArgs = (
     "List::Util" => 0,
     "Scalar::Util" => 0,
     "Tickit::Widget" => "0.12",
-    "Tickit::Window" => "0.17",
-    "parent" => 0
+    "Tickit::Window" => "0.20",
+    "parent" => 0,
+    "perl" => "5.010",
   },
-  "VERSION" => "0.004",
+  "VERSION" => "0.005",
   "test" => {
     "TESTS" => "t/*.t"
   }

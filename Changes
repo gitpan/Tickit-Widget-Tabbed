@@ -1,5 +1,12 @@
 Revision history for Tickit-Widget-Tabbed
 
+0.005     2012-09-11 06:00:23 Europe/London
+New ribbon model - allow custom subclasses
+Indicate selected tab with [] brackets
+Allow mouse click on tab labels
+Scroll tab ribbon if there's too many labels for the window width
+Various small bugfixes relating to tab move and removal
+
 0.004     2012-06-12 09:50:32 Europe/London
 Use Tickit 0.17's hidden windows to give every child a window with all but one
   hidden, rather than only one child having a window.

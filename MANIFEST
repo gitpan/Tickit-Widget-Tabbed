@@ -1,8 +1,10 @@
 Changes
 dist.ini
+examples/demo-custom-ribbon.pl
 examples/demo-logtail.pl
 examples/demo-tabs.pl
 lib/Tickit/Widget/Tabbed.pm
+lib/Tickit/Widget/Tabbed/Ribbon.pm
 LICENSE
 Makefile.PL
 MANIFEST			This list of files
@@ -26,3 +28,5 @@ t/20-tabs.t
 t/21-tab-activate.t
 t/22-tabs-late.t
 t/23-tab-subclass.t
+t/30-remove-last.t
+t/31-change-orientation.t

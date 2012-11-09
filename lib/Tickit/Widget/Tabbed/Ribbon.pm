@@ -5,7 +5,7 @@ use warnings;
 
 use base qw( Tickit::Widget );
 
-our $VERSION = '0.005';
+our $VERSION = '0.006';
 
 use Scalar::Util qw( weaken );
 use Tickit::Utils qw( textwidth );
@@ -153,7 +153,10 @@ sub tabs {
 sub _tab2index {
 	my $self = shift;
 	my ( $tab_or_index ) = @_;
-	return $tab_or_index if !ref $tab_or_index;
+	if( !ref $tab_or_index ) {
+		croak "Invalid tab index" if $tab_or_index < 0 or $tab_or_index >= @{ $self->{tabs} };
+		return $tab_or_index;
+	}
 	return ( grep { $tab_or_index == $self->{tabs}[$_] } 0 .. $#{ $self->{tabs} } )[0];
 }
 

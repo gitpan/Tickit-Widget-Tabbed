@@ -1,5 +1,8 @@
 Revision history for Tickit-Widget-Tabbed
 
+0.006     2012-11-09 19:02:50 Europe/London
+Have ->activate_index croak on out-of-bounds tab indexes.
+
 0.005     2012-09-11 06:00:23 Europe/London
 New ribbon model - allow custom subclasses
 Indicate selected tab with [] brackets

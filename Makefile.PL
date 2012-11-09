@@ -35,7 +35,7 @@ my %WriteMakefileArgs = (
     "parent" => 0,
     "perl" => "5.010",
   },
-  "VERSION" => "0.005",
+  "VERSION_FROM" => "lib/Tickit/Widget/Tabbed.pm",
   "test" => {
     "TESTS" => "t/*.t"
   }

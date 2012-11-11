@@ -11,7 +11,7 @@ use Tickit::Test;
 use Tickit::Widget::Static;
 use Tickit::Widget::Tabbed;
 
-my ( $term, $win ) = mk_term_and_window;
+my $win = mk_window;
 
 my $widget = Tickit::Widget::Tabbed->new( tab_position => "top" );
 

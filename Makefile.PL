@@ -18,7 +18,7 @@ my %WriteMakefileArgs = (
     "Tickit::Test" => "0.12",
     "Tickit::Widget::Static" => 0,
     "Tickit::Widget::VBox" => 0,
-    "Tickit::Window" => "0.20",
+    "Tickit::Window" => "0.23",
   },
   "CONFIGURE_REQUIRES" => {
     "ExtUtils::MakeMaker" => "6.30"

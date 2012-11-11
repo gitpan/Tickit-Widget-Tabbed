@@ -1,5 +1,10 @@
 Revision history for Tickit-Widget-Tabbed
 
+0.007     2012-11-11 14:33:26 Europe/London
+Disable the deprecated CLEAR_BEFORE_RENDER behaviour
+Don't create two sets of child windows for widgets
+Use Tickit 0.23's make_hidden_sub Window method
+
 0.006     2012-11-09 19:02:50 Europe/London
 Have ->activate_index croak on out-of-bounds tab indexes.
 

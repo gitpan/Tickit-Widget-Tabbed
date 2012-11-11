@@ -5,7 +5,7 @@ use warnings;
 
 use base qw( Tickit::Widget );
 
-our $VERSION = '0.006';
+our $VERSION = '0.007';
 
 use Scalar::Util qw( weaken );
 use Tickit::Utils qw( textwidth );

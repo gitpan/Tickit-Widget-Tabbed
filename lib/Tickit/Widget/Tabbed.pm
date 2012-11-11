@@ -3,14 +3,17 @@ package Tickit::Widget::Tabbed;
 use strict;
 use warnings;
 use parent qw(Tickit::Widget);
-BEGIN { Tickit::Widget->VERSION("0.12") }
+BEGIN {
+	Tickit::Widget->VERSION("0.12");
+	Tickit::Window->VERSION("0.23");
+}
 use Carp;
 use Tickit::Pen;
 use List::Util qw(max);
 
 use Tickit::Widget::Tabbed::Ribbon;
 
-our $VERSION = '0.006';
+our $VERSION = '0.007';
 
 =head1 NAME
 
@@ -45,6 +48,8 @@ sub cols { 1 }
 
 sub TAB_CLASS { shift->{tab_class} || "Tickit::Widget::Tabbed::Tab" }
 sub RIBBON_CLASS { shift->{ribbon_class} || "Tickit::Widget::Tabbed::Ribbon" }
+
+use constant CLEAR_BEFORE_RENDER => 0;
 
 # Don't need to implement this as rendering is done by the child or the tab
 # window using its expose event
@@ -148,8 +153,8 @@ sub _new_child_window
 
 	my $window = $self->window or return undef;
 
-	my $child_window = $window->make_sub( @{ $self->{child_window_geometry} } );
-	$child_window->hide unless $visible;
+	my $child_window = $window->make_hidden_sub( @{ $self->{child_window_geometry} } );
+	$child_window->show if $visible;
 
 	return $child_window;
 }
@@ -271,9 +276,6 @@ sub add_tab {
 	my $tab = $self->TAB_CLASS->new( $self, widget => $child, %opts );
 
 	$ribbon->append_tab( $tab );
-
-	# Child is visible if it's the first one
-	$child->set_window($self->_new_child_window($ribbon->tabs == 1));
 
 	return $tab;
 }

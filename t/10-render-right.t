@@ -9,7 +9,7 @@ use Tickit::Test;
 use Tickit::Widget::Static;
 use Tickit::Widget::Tabbed;
 
-my ( $term, $win ) = mk_term_and_window;
+my $win = mk_window;
 
 my @statics = map { Tickit::Widget::Static->new( text => "Widget $_" ) } 0 .. 2;
 
@@ -25,9 +25,7 @@ ok( defined $statics[0]->window, '$static has window after ->set_window $win' );
 
 flush_tickit;
 
-is_termlog( [ SETPEN,
-              CLEAR,
-              GOTO(0,0),
+is_termlog( [ GOTO(0,0),
               SETPEN,
               PRINT("Widget 0"),
               SETBG(undef),

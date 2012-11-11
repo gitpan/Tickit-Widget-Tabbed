@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               Tickit-Widget-Tabbed
-version:            0.006
+version:            0.007
 abstract:           Basic tabbed window support
 author:
     - Tom Molesworth <cpan@entitymodel.com>
@@ -15,7 +15,7 @@ build_requires:
     Tickit::Test:         0.12
     Tickit::Widget::Static:  0
     Tickit::Widget::VBox:  0
-    Tickit::Window:       0.20
+    Tickit::Window:       0.23
 requires:
     List::Util:      0
     parent:          0

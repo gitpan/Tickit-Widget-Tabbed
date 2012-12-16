@@ -13,7 +13,7 @@ use List::Util qw(max);
 
 use Tickit::Widget::Tabbed::Ribbon;
 
-our $VERSION = '0.007';
+our $VERSION = '0.008';
 
 =head1 NAME
 
@@ -462,18 +462,18 @@ sub activate {
 sub _activate {
 	my $self = shift;
 	$self->widget->window->show if $self->widget->window;
-	$self->{on_activated}->( $self ) if $self->{on_activated};
+	$self->${\$self->{on_activated}}() if $self->{on_activated};
 }
 
 sub _deactivate {
 	my $self = shift;
-	$self->{on_deactivated}->( $self ) if $self->{on_deactivated};
+	$self->${\$self->{on_deactivated}}() if $self->{on_deactivated};
 	$self->widget->window->hide if $self->widget->window;
 }
 
 =head2 set_on_activated
 
-Set a callback to invoke when the tab is activated
+Set a callback or method name to invoke when the tab is activated
 
 =cut
 
@@ -485,7 +485,7 @@ sub set_on_activated
 
 =head2 set_on_deactivated
 
-Set a callback to invoke when the tab is deactivated
+Set a callback or method name to invoke when the tab is deactivated
 
 =cut
 

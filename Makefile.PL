@@ -26,6 +26,7 @@ my %WriteMakefileArgs = (
   "DISTNAME" => "Tickit-Widget-Tabbed",
   "EXE_FILES" => [],
   "LICENSE" => "perl",
+  "MIN_PERL_VERSION" => "5.010",
   "NAME" => "Tickit::Widget::Tabbed",
   "PREREQ_PM" => {
     "List::Util" => 0,
@@ -33,7 +34,6 @@ my %WriteMakefileArgs = (
     "Tickit::Widget" => "0.12",
     "Tickit::Window" => "0.20",
     "parent" => 0,
-    "perl" => "5.010",
   },
   "VERSION_FROM" => "lib/Tickit/Widget/Tabbed.pm",
   "test" => {

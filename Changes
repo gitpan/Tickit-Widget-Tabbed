@@ -1,5 +1,9 @@
 Revision history for Tickit-Widget-Tabbed
 
+0.008     2012-12-16 18:33:39 Europe/London
+Allow Tab on_{de,}activated to be a method name or a coderef
+Set minimal perl version correctly in Makefile.PL (RT81862)
+
 0.007     2012-11-11 14:33:26 Europe/London
 Disable the deprecated CLEAR_BEFORE_RENDER behaviour
 Don't create two sets of child windows for widgets

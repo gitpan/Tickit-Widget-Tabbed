@@ -32,7 +32,7 @@ my %WriteMakefileArgs = (
     "List::Util" => 0,
     "Scalar::Util" => 0,
     "Tickit::Widget" => "0.12",
-    "Tickit::Window" => "0.20",
+    "Tickit::Window" => "0.28",
     "parent" => 0,
   },
   "VERSION_FROM" => "lib/Tickit/Widget/Tabbed.pm",

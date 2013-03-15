@@ -5,7 +5,7 @@ use warnings;
 
 use base qw( Tickit::Widget );
 
-our $VERSION = '0.008';
+our $VERSION = '0.009';
 
 use Scalar::Util qw( weaken );
 use Tickit::Utils qw( textwidth );
@@ -198,7 +198,9 @@ sub remove_tab {
 
 	my $tabs = $self->{tabs};
 
-	splice @$tabs, $del_index, 1, ();
+	my ( $tab ) = splice @$tabs, $del_index, 1, ();
+	$tab->widget->window->close;
+
 	if( $self->{active_tab_index} > $del_index ) {
 		$self->{active_tab_index}--;
 	}

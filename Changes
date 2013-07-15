@@ -1,5 +1,9 @@
 Revision history for Tickit-Widget-Tabbed
 
+0.010     2013-07-15 03:11:21 Europe/London
+Use Tickit::Style for configuration
+Updated to use Tickit 0.36's ->render_to_rb
+
 0.009     2013-03-15 21:48:11 Europe/London
 Make sure to ->close windows of removed tabs
 

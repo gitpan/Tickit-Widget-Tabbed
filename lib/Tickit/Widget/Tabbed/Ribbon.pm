@@ -5,7 +5,7 @@ use warnings;
 
 use base qw( Tickit::Widget );
 
-our $VERSION = '0.009';
+our $VERSION = '0.010';
 
 use Scalar::Util qw( weaken );
 use Tickit::Utils qw( textwidth );
@@ -83,18 +83,6 @@ or
 
 use constant CLEAR_BEFORE_RENDER => 0;
 
-=head2 $pen = $ribbon->active_pen
-
-Returns the L<Tickit::Pen> object used for the active tab
-
-=cut
-
-use Tickit::WidgetRole::Penable
-	name => 'active', default => { fg => 14 };
-
-use Tickit::WidgetRole::Penable
-	name => 'more', default => { fg => 'cyan' };
-
 sub new_for_orientation {
         my $class = shift;
         my ( $orientation, @args ) = @_;
@@ -111,17 +99,11 @@ sub new {
 			croak "$class cannot ->$method - do you subclass and implement it?";
 	}
 
-	# TODO: Move widget default pen into the Penable role so this can be
-	# neater
-	exists $args{bg} or $args{bg} = 4;
-	exists $args{fg} or $args{fg} = 7;
-	
 	my $self = $class->SUPER::new( %args );
 
-	$self->_init_active_pen;
-	$self->_init_more_pen;
-
-	$self->set_more_markers( "<..", "..>" );
+	my ( $prev_more, $next_more ) = $args{tabbed}->get_style_values(qw( more_left more_right ));
+	$self->{prev_more} = [ $prev_more, textwidth $prev_more ];
+	$self->{next_more} = [ $next_more, textwidth $next_more ];
 
 	$self->{tabs} = [];
 	push @{$self->{tabs}}, @{$args{tabs}} if $args{tabs};
@@ -134,6 +116,11 @@ sub new {
 	$self->scroll_to_visible( $self->{active_tab_index} );
 
 	return $self;
+}
+
+sub active_pen {
+	my $self = shift;
+	return $self->{tabbed}->get_style_pen( "active" );
 }
 
 =head2 @tabs = $ribbon->tabs
@@ -158,6 +145,24 @@ sub _tab2index {
 		return $tab_or_index;
 	}
 	return ( grep { $tab_or_index == $self->{tabs}[$_] } 0 .. $#{ $self->{tabs} } )[0];
+}
+
+sub _pen_for_tab {
+	my $self = shift;
+	my ( $tab ) = @_;
+
+	if( $tab->_has_pen and $tab->is_active ) {
+		return Tickit::Pen->new($tab->pen->getattrs, $self->active_pen->getattrs);
+	}
+	elsif( $tab->_has_pen ) {
+		return $tab->pen;
+	}
+	elsif( $tab->is_active ) {
+		return $self->active_pen;
+	}
+	else {
+		return (); # empty in list context
+	}
 }
 
 =head2 $index = $ribbon->active_tab_index
@@ -290,14 +295,6 @@ sub on_pen_changed {
 	return $self->SUPER::on_pen_changed( @_ );
 }
 
-sub set_more_markers {
-	my $self = shift;
-	my ( $prev_more, $next_more ) = @_;
-
-	$self->{prev_more} = [ $prev_more, textwidth $prev_more ];
-	$self->{next_more} = [ $next_more, textwidth $next_more ];
-}
-
 sub on_key { 0 }
 
 sub on_mouse { 0 }
@@ -344,52 +341,32 @@ sub reshape {
 	}
 }
 
-sub render {
+sub render_to_rb {
 	my $self = shift;
-	my %args = @_;
-
-	my $win = $self->window or return;
-	my $rect = $args{rect};
+	my ( $rb, $rect ) = @_;
 
 	$rect->top == 0 or return;
 	$rect->bottom == 1 or return;
 
-	my $next_col = -$self->{scroll_offset};
+	$rb->goto(0, -$self->{scroll_offset});
 
 	my $prev_active;
 	foreach my $tab ($self->tabs) {
 		my $active = $tab->is_active;
 
-# Select appropriate position for the labels
-		return if $next_col >= $rect->right;
-		my $this_col = $next_col;
-
-		$next_col += $tab->label_width + 1;
-		next unless $next_col >= $rect->left;
-
-		# Only need to goto the first time
-		$win->goto(0, $this_col) if $this_col <= 0;
-
-# Show label in different style if this is the active tab
-		my %tabattrs = (
-			$tab->_has_pen ? $tab->pen->getattrs : (),
-			$active ? $self->active_pen->getattrs : () );
-
-		$win->print($active      ? $self->{active_marker}[0] :
-			    $prev_active ? $self->{active_marker}[1] :
-			                   ' ');
-		$win->print($tab->label, %tabattrs);
+		$rb->text($active      ? $self->{active_marker}[0] :
+			  $prev_active ? $self->{active_marker}[1] :
+			                 ' ');
+		$rb->text($tab->label, $self->_pen_for_tab($tab));
 
 		$prev_active = $active;
 	}
 
 	if($prev_active) {
-		$win->print($self->{active_marker}[1]);
-		$next_col++;
+		$rb->text($self->{active_marker}[1]);
 	}
 
-	$win->goto(0, $next_col) if $next_col == 0;
-	$win->erasech($win->cols - $next_col);
+	$rb->erase_to($self->window->cols);
 }
 
 sub _col2tab {
@@ -480,7 +457,7 @@ sub scroll_to_visible {
 			0, 0, 1, $prev_more->[1],
 		);
 		$prev_more->[2] = $w;
-		$w->set_pen( $self->more_pen );
+		$w->set_pen( $self->{tabbed}->get_style_pen( "more" ) );
 		$w->set_on_expose( sub {
 			my $win = shift;
 			$win->goto( 0, 0 );
@@ -504,7 +481,7 @@ sub scroll_to_visible {
 			0, $win->cols - $next_more->[1], 1, $next_more->[1],
 		);
 		$next_more->[2] = $w;
-		$w->set_pen( $self->more_pen );
+		$w->set_pen( $self->{tabbed}->get_style_pen( "more" ) );
 		$w->set_on_expose( sub {
 			my $win = shift;
 			$win->goto( 0, 0 );
@@ -613,12 +590,12 @@ sub reshape {
 	}
 }
 
-sub render {
+sub render_to_rb {
 	my $self = shift;
-	my %args = @_;
+	my ( $rb, $rect ) = @_;
 
-	my $win = $self->window or return;
-	my $rect = $args{rect};
+	my $lines = $self->window->lines;
+	my $cols  = $self->window->cols;
 
 	my $pos = $self->{tab_position};
 
@@ -629,29 +606,23 @@ sub render {
 		my $this_line = $next_line;
 		$next_line++;
 
-# Select appropriate position for the labels
 		next if $this_line < $rect->top;
 		return if $this_line >= $rect->bottom;
-		$win->goto($this_line, 0);
+		$rb->goto($this_line, 0);
 
-		my %tabattrs = (
-			$tab->_has_pen ? $tab->pen->getattrs : (),
-			$active ? $self->active_pen->getattrs : () );
-
-		my $spare = $win->cols - $tab->label_width;
-# Show label in different style if this is the active tab
+		my $spare = $cols - $tab->label_width;
 		if($pos eq 'left') {
-			$win->print($tab->label, %tabattrs);
-			$win->print($active ? (' ' . ('>' x ($spare - 1))) : (' ' x $spare));
+			$rb->text($tab->label, $self->_pen_for_tab($tab));
+			$rb->text($active ? (' ' . ('>' x ($spare - 1))) : (' ' x $spare));
 		} elsif($pos eq 'right') {
-			$win->print($active ? (('<' x ($spare - 1)) . ' ') : (' ' x $spare));
-			$win->print($tab->label, %tabattrs);
+			$rb->text($active ? (('<' x ($spare - 1)) . ' ') : (' ' x $spare));
+			$rb->text($tab->label, $self->_pen_for_tab($tab));
 		}
 	}
 
-	while($next_line < $win->lines) {
-		$win->goto($next_line, 0);
-		$win->erasech($win->cols);
+	while($next_line < $lines) {
+		$rb->goto($next_line, 0);
+		$rb->erase_to($cols);
 		++$next_line;
 	}
 }

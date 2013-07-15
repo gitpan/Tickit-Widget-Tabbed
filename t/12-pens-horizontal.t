@@ -24,7 +24,7 @@ is_display( [ [TEXT("[",fg=>7,bg=>4), TEXT("tab",fg=>14,bg=>4), TEXT("]othertab 
               [TEXT("Widget")] ],
             'Display initially' );
 
-$widget->pen_tabs->chattr(bg => 2);
+$widget->set_style(ribbon_bg => 2);
 
 flush_tickit;
 
@@ -32,7 +32,7 @@ is_display( [ [TEXT("[",fg=>7,bg=>2), TEXT("tab",fg=>14,bg=>2), TEXT("]othertab 
               [TEXT("Widget")] ],
             'Display after pen_tabs ->chattr' );
 
-$widget->pen_active->chattr(b => 1);
+$widget->set_style(active_b => 1);
 
 flush_tickit;
 

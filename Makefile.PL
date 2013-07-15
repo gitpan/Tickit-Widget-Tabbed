@@ -31,7 +31,7 @@ my %WriteMakefileArgs = (
   "PREREQ_PM" => {
     "List::Util" => 0,
     "Scalar::Util" => 0,
-    "Tickit::Widget" => "0.12",
+    "Tickit::Widget" => "0.36",
     "Tickit::Window" => "0.28",
     "parent" => 0,
   },

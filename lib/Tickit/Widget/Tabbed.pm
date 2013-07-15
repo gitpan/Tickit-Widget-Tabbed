@@ -7,13 +7,15 @@ BEGIN {
 	Tickit::Widget->VERSION("0.12");
 	Tickit::Window->VERSION("0.23");
 }
+use Tickit::Style;
+
 use Carp;
 use Tickit::Pen;
 use List::Util qw(max);
 
 use Tickit::Widget::Tabbed::Ribbon;
 
-our $VERSION = '0.009';
+our $VERSION = '0.010';
 
 =head1 NAME
 
@@ -38,6 +40,52 @@ Subclass of L<Tickit::ContainerWidget>.
 
 =cut
 
+=head1 STYLE
+
+The default style pen is used as the widget pen. The following style pen
+prefixes are also used:
+
+=over 4
+
+=item ribbon => PEN
+
+The pen used for the ribbon
+
+=item active => PEN
+
+The pen attributes used for the active tab on the ribbon
+
+=item more => PEN
+
+The pen used for "more" ribbon scroll markers
+
+=back
+
+The following style keys are used:
+
+=over 4
+
+=item more_left => STRING
+
+=item more_right => STRING
+
+The text used to indicate that there is more content scrolled to the left or
+right, respectively, in the ribbon
+
+=back
+
+=cut
+
+style_definition base =>
+	ribbon_fg => 7,
+	ribbon_bg => 4,
+	active_fg => 14,
+	more_fg => "cyan",
+	more_left => "<..",
+	more_right => "..>";
+
+use constant WIDGET_PEN_FROM_STYLE => 1;
+
 =head1 METHODS
 
 =cut
@@ -53,7 +101,7 @@ use constant CLEAR_BEFORE_RENDER => 0;
 
 # Don't need to implement this as rendering is done by the child or the tab
 # window using its expose event
-sub render { }
+sub render_to_rb { }
 
 =head2 new
 
@@ -64,10 +112,6 @@ Takes the following named parameters:
 =over 4
 
 =item * tab_position - (optional) location of the tabs, should be one of left, top, right, bottom.
-
-=item * pen_tabs - (optional) C<Tickit::Pen> to use to render the tabs
-
-=item * pen_active - (optional) C<Tickit::Pen> of additional attributes to use to render the active tab
 
 =back
 
@@ -85,8 +129,7 @@ sub new {
 
 	my $ribbon = $self->{ribbon};
 
-	$ribbon->set_pen($args{pen_tabs}) if $args{pen_tabs};
-	$ribbon->set_active_pen($args{pen_active}) if $args{pen_active};
+	$ribbon->set_pen($self->get_style_pen("ribbon"));
 
 	return $self;
 }
@@ -119,6 +162,15 @@ sub _window_position_bottom {
 	my $self = shift;
 	return $self->window->lines - 1, 0, 1, $self->window->cols,
 	       0, 0, $self->window->lines - 1, $self->window->cols;
+}
+
+sub on_style_changed_values {
+	my $self = shift;
+	my %values = @_;
+
+	if( grep { $_ =~ m/^ribbon_/ } keys %values ) {
+		$self->{ribbon}->set_pen( $self->get_style_pen("ribbon"));
+	}
 }
 
 sub reshape {
@@ -199,6 +251,7 @@ sub tab_position {
 			$self->{ribbon} = $self->RIBBON_CLASS->new_for_orientation(
 				$orientation, %args
 			);
+			$self->{ribbon}->set_pen($args{pen}) if $args{pen};
 		}
 
 		$self->{tab_position} = $pos;
@@ -208,24 +261,6 @@ sub tab_position {
 		$self->redraw;
 	}
 	return $self->{tab_position};
-}
-
-=head2 pen_tabs
-
-=head2 pen_active
-
-Accessors for the rendering pens.
-
-=cut
-
-sub pen_tabs {
-	my $self = shift;
-	return $self->{ribbon}->pen;
-}
-
-sub pen_active {
-	my $self = shift;
-	return $self->{ribbon}->active_pen;
 }
 
 sub _tabs_changed {

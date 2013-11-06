@@ -13,8 +13,13 @@ GetOptions(
         'position|p=s' => \(my $position = "bottom"),
 ) or exit(1);
 
-my $tabbed = Tickit::Widget::Tabbed->new( tab_position => $position );
-$tabbed->pen_active->chattrs( { b => 1, u => 1 } );
+my $tabbed = Tickit::Widget::Tabbed->new(
+        tab_position => $position,
+        style => {
+                active_b => 1,
+                active_u => 1,
+        },
+);
 
 my $counter = 1;
 sub add_tab

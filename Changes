@@ -1,5 +1,16 @@
 Revision history for Tickit-Widget-Tabbed
 
+0.011     2013-11-06 17:21:12 UTC
+          [CHANGES]
+           * Support horizontal ribbons taller than 1 line (RT88081)
+           * Updated demos to use Tickit::RenderBuffer
+
+          [BUGFIXES]
+           * Remember to pass constructor arguments to SUPER::new (RT89104)
+           * Updated demos to use new Tickit::Style-based API (RT90082)
+           * Need to use 'read_handle' for IO::Async::FileStream, not just
+             'handle'
+
 0.010     2013-07-15 03:11:21 Europe/London
 Use Tickit::Style for configuration
 Updated to use Tickit 0.36's ->render_to_rb

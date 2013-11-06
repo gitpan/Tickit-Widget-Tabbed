@@ -1,33 +1,33 @@
---- #YAML:1.0
-name:               Tickit-Widget-Tabbed
-version:            0.010
-abstract:           Basic tabbed window support
+---
+abstract: 'Basic tabbed window support'
 author:
-    - Tom Molesworth <cpan@entitymodel.com>
-license:            perl
-distribution_type:  module
-configure_requires:
-    ExtUtils::MakeMaker:  6.30
+  - 'Tom Molesworth <cpan@entitymodel.com>'
 build_requires:
-    Test::Identity:       0
-    Test::More:           0
-    Test::Refcount:       0
-    Tickit::Test:         0.12
-    Tickit::Widget::Static:  0
-    Tickit::Widget::VBox:  0
-    Tickit::Window:       0.23
-requires:
-    List::Util:      0
-    parent:          0
-    perl:            5.010
-    Scalar::Util:    0
-    Tickit::Widget:  0.36
-    Tickit::Window:  0.28
-no_index:
-    directory:
-        - t
-        - inc
-generated_by:       ExtUtils::MakeMaker version 6.57_05
+  Test::Identity: 0
+  Test::More: 0
+  Test::Refcount: 0
+  Tickit::Test: 0.12
+  Tickit::Widget::Static: 0
+  Tickit::Widget::VBox: 0
+  Tickit::Window: 0.23
+configure_requires:
+  ExtUtils::MakeMaker: 6.30
+dynamic_config: 1
+generated_by: 'ExtUtils::MakeMaker version 6.66, CPAN::Meta::Converter version 2.132830'
+license: perl
 meta-spec:
-    url:      http://module-build.sourceforge.net/META-spec-v1.4.html
-    version:  1.4
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Tickit-Widget-Tabbed
+no_index:
+  directory:
+    - t
+    - inc
+requires:
+  List::Util: 0
+  Scalar::Util: 0
+  Tickit::Widget: 0.36
+  Tickit::Window: 0.28
+  parent: 0
+  perl: 5.010
+version: 0.011

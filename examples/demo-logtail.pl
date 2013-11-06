@@ -27,7 +27,7 @@ foreach my $path ( @ARGV ) {
 
         my $stream = IO::Async::Protocol::LineStream->new(
                 transport => IO::Async::FileStream->new(
-                        handle => $fh,
+                        read_handle => $fh,
                         on_initial => sub {
                                 my ( $self ) = @_;
                                 $self->seek_to_last( "\n" );

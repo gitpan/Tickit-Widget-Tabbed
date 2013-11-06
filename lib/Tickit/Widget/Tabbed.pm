@@ -15,7 +15,7 @@ use List::Util qw(max);
 
 use Tickit::Widget::Tabbed::Ribbon;
 
-our $VERSION = '0.010';
+our $VERSION = '0.011';
 
 =head1 NAME
 
@@ -120,7 +120,7 @@ Takes the following named parameters:
 sub new {
 	my $class = shift;
 	my %args = @_;
-	my $self = $class->SUPER::new;
+	my $self = $class->SUPER::new(%args);
 
 	$self->{tab_class}  = delete($args{tab_class});
 	$self->{ribbon_class} = delete($args{ribbon_class});
@@ -153,15 +153,21 @@ sub _window_position_right {
 }
 
 sub _window_position_top {
-	my $self = shift;
-	return 0, 0, 1, $self->window->cols,
-	       1, 0, $self->window->lines - 1, $self->window->cols;
+        my $self = shift;
+        my $ribbon = $self->{ribbon};
+        my $label_height = $ribbon->lines;
+        $label_height = 1 unless $self->window->lines > $label_height;
+        return 0, 0, $label_height, $self->window->cols,
+               $label_height, 0, max(1, $self->window->lines - $label_height), $self->window->cols;
 }
 
 sub _window_position_bottom {
-	my $self = shift;
-	return $self->window->lines - 1, 0, 1, $self->window->cols,
-	       0, 0, $self->window->lines - 1, $self->window->cols;
+        my $self = shift;
+        my $ribbon = $self->{ribbon};
+        my $label_height = $ribbon->lines;
+        $label_height = 1 unless $self->window->lines > $label_height;
+        return $self->window->lines - $label_height, 0, $label_height, $self->window->cols,
+               0, 0, max(1, $self->window->lines - $label_height), $self->window->cols;
 }
 
 sub on_style_changed_values {

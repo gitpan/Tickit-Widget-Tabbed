@@ -1,0 +1,52 @@
+{
+   "abstract" : "Basic tabbed window support",
+   "author" : [
+      "Tom Molesworth <cpan@entitymodel.com>"
+   ],
+   "dynamic_config" : 1,
+   "generated_by" : "ExtUtils::MakeMaker version 6.66, CPAN::Meta::Converter version 2.132830",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Tickit-Widget-Tabbed",
+   "no_index" : {
+      "directory" : [
+         "t",
+         "inc"
+      ]
+   },
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "Test::Identity" : "0",
+            "Test::More" : "0",
+            "Test::Refcount" : "0",
+            "Tickit::Test" : "0.12",
+            "Tickit::Widget::Static" : "0",
+            "Tickit::Widget::VBox" : "0",
+            "Tickit::Window" : "0.23"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "6.30"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "List::Util" : "0",
+            "Scalar::Util" : "0",
+            "Tickit::Widget" : "0.36",
+            "Tickit::Window" : "0.28",
+            "parent" : "0",
+            "perl" : "5.010"
+         }
+      }
+   },
+   "release_status" : "stable",
+   "version" : "0.011"
+}

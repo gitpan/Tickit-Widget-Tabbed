@@ -11,8 +11,11 @@ use Tickit::Widget::Tabbed;
 my $tabbed = Tickit::Widget::Tabbed->new(
    tab_position => "bottom",
    ribbon_class => "CustomRibbon",
+   style => {
+           active_b => 1,
+           active_u => 1,
+   },
 );
-$tabbed->pen_active->chattrs( { b => 1, u => 1 } );
 
 my $counter = 1;
 sub add_tab
@@ -44,6 +47,13 @@ $tickit->run;
 package CustomRibbon;
 use base qw( Tickit::Widget::Tabbed::Ribbon );
 
+use Tickit::Style -copy;
+
+BEGIN {
+        style_definition base =>
+                current_fg => 8;
+}
+
 package CustomRibbon::horizontal;
 use base qw( CustomRibbon );
 
@@ -52,48 +62,34 @@ use Tickit::Utils qw( textwidth );
 sub lines { 1 }
 sub cols  { 1 }
 
-sub render
+sub render_to_rb
 {
         my $self = shift;
-        my %args = @_;
-
-        my $win = $self->window or return;
+        my ( $rb, $rect ) = @_;
 
         my @tabs = $self->tabs;
 
-        my $col = 0;
-        my $printed;
-
-        # TODO: consider whether $win->print should return width?
-
-        $win->goto( 0, $col );
-        $win->print( $printed = sprintf "[%d tabs]: ", scalar @tabs );
-        $col += textwidth $printed;
+        $rb->goto( 0, 0 );
+        $rb->text( sprintf "[%d tabs]: ", scalar @tabs );
 
         my $active = $self->active_tab;
-        $win->print( $printed = $active->label, $self->active_pen );
-        $col += textwidth $printed;
+        $rb->text( $active->label, $self->active_pen );
 
-        $win->print( $printed = " [also:" );
-        $col += textwidth $printed;
+        $rb->text( " [also:" );
 
         foreach my $tab ( @tabs ) {
-                $win->erasech( 1, 1 ); $col += 1;
+                $rb->erase( 1 );
                 if( $tab == $active ) {
-                        $win->print( $printed = "x" x textwidth( $tab->label ), fg => 8 );
+                        $rb->text( "x" x textwidth( $tab->label ), $self->get_style_pen( "current" ) );
                 }
                 else {
-                        $win->print( $printed = $tab->label );
+                        $rb->text( $tab->label );
                 }
-                $col += textwidth $printed;
         }
 
-        $win->print( "]" );
-        $col += 1;
+        $rb->text( "]" );
 
-        if( ( my $spare = $win->cols - $col ) > 0 ) {
-                $win->erasech( $spare );
-        }
+        $rb->erase_to( $self->window->cols );
 }
 
 sub scroll_to_visible { }

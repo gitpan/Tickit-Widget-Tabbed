@@ -4,8 +4,9 @@ use strict;
 use warnings;
 
 use base qw( Tickit::Widget );
+Tickit::Window->VERSION( '0.42' );
 
-our $VERSION = '0.011';
+our $VERSION = '0.012';
 
 use Scalar::Util qw( weaken );
 use Tickit::Utils qw( textwidth );
@@ -458,16 +459,13 @@ sub scroll_to_visible {
 		);
 		$prev_more->[2] = $w;
 		$w->set_pen( $self->{tabbed}->get_style_pen( "more" ) );
-		$w->set_on_expose( sub {
-			my $win = shift;
-			$win->goto( 0, 0 );
-			$win->print( $prev_more->[0] );
-			$win->restore;
-		} );
-		$w->set_on_mouse( sub {
-			my $win = shift;
-			my ( $ev, $button ) = @_;
-			$self->_scroll_left if $ev eq "press" && $button == 1;
+		$w->set_on_expose( with_rb => sub {
+			my ( undef, $rb, $rect ) = @_;
+			$rb->text_at( 0, 0, $prev_more->[0] );
+		});
+		$w->set_on_mouse( with_ev => sub {
+			my ( undef, $ev ) = @_;
+			$self->_scroll_left if $ev->type eq "press" && $ev->button == 1;
 			return 1;
 		} );
 	}
@@ -482,16 +480,13 @@ sub scroll_to_visible {
 		);
 		$next_more->[2] = $w;
 		$w->set_pen( $self->{tabbed}->get_style_pen( "more" ) );
-		$w->set_on_expose( sub {
-			my $win = shift;
-			$win->goto( 0, 0 );
-			$win->print( $next_more->[0] );
-			$win->restore;
+		$w->set_on_expose( with_rb => sub {
+			my ( undef, $rb, $rect ) = @_;
+			$rb->text_at( 0, 0, $next_more->[0] );
 		} );
-		$w->set_on_mouse( sub {
-			my $win = shift;
-			my ( $ev, $button ) = @_;
-			$self->_scroll_right if $ev eq "press" && $button == 1;
+		$w->set_on_mouse( with_ev => sub {
+			my ( undef, $ev ) = @_;
+			$self->_scroll_right if $ev->type eq "press" && $ev->button == 1;
 			return 1;
 		} );
 	}

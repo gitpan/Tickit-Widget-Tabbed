@@ -1,5 +1,12 @@
 Revision history for Tickit-Widget-Tabbed
 
+0.012     2014-04-01 22:53:51 UTC
+          [CHANGES]
+           * Use new Window expose with_rb and mouse with_ev events from
+             Tickit 0.42
+           * Use new associative is_termlog() to avoid rendering order
+             upsetting unit tests
+
 0.011     2013-11-06 17:21:12 UTC
           [CHANGES]
            * Support horizontal ribbons taller than 1 line (RT88081)

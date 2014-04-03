@@ -1,11 +1,17 @@
+#  You may distribute under the terms of the Artistic License (the same terms
+#  as Perl itself)
+#
+#  (C) Tom Molesworth 2011,
+#      Paul Evans, 2011-2014 -- leonerd@leonerd.org.uk
+
 package Tickit::Widget::Tabbed;
-# ABSTRACT: Basic tabbed window support
+
 use strict;
 use warnings;
 use parent qw(Tickit::Widget);
 BEGIN {
-	Tickit::Widget->VERSION("0.12");
-	Tickit::Window->VERSION("0.23");
+        Tickit::Widget->VERSION("0.12");
+        Tickit::Window->VERSION("0.23");
 }
 use Tickit::Style;
 
@@ -15,15 +21,11 @@ use List::Util qw(max);
 
 use Tickit::Widget::Tabbed::Ribbon;
 
-our $VERSION = '0.012';
+our $VERSION = '0.013';
 
 =head1 NAME
 
 Tickit::Widget::Tabbed - provide tabbed window support
-
-=head1 VERSION
-
-version 0.002
 
 =head1 SYNOPSIS
 
@@ -77,12 +79,12 @@ right, respectively, in the ribbon
 =cut
 
 style_definition base =>
-	ribbon_fg => 7,
-	ribbon_bg => 4,
-	active_fg => 14,
-	more_fg => "cyan",
-	more_left => "<..",
-	more_right => "..>";
+        ribbon_fg => 7,
+        ribbon_bg => 4,
+        active_fg => 14,
+        more_fg => "cyan",
+        more_left => "<..",
+        more_right => "..>";
 
 use constant WIDGET_PEN_FROM_STYLE => 1;
 
@@ -118,38 +120,38 @@ Takes the following named parameters:
 =cut
 
 sub new {
-	my $class = shift;
-	my %args = @_;
-	my $self = $class->SUPER::new(%args);
+        my $class = shift;
+        my %args = @_;
+        my $self = $class->SUPER::new(%args);
 
-	$self->{tab_class}  = delete($args{tab_class});
-	$self->{ribbon_class} = delete($args{ribbon_class});
+        $self->{tab_class}  = delete($args{tab_class});
+        $self->{ribbon_class} = delete($args{ribbon_class});
 
-	$self->tab_position(delete($args{tab_position}) || 'top');
+        $self->tab_position(delete($args{tab_position}) || 'top');
 
-	my $ribbon = $self->{ribbon};
+        my $ribbon = $self->{ribbon};
 
-	$ribbon->set_pen($self->get_style_pen("ribbon"));
+        $ribbon->set_pen($self->get_style_pen("ribbon"));
 
-	return $self;
+        return $self;
 }
 
 # Positions for the four screen edges - these will return appropriate sizes
 # for the tab and child subwindows
 sub _window_position_left {
-	my $self = shift;
-	my $ribbon = $self->{ribbon};
-	my $label_width = $ribbon->cols;
-	return 0, 0, $self->window->lines, $label_width,
-	       0, $label_width, $self->window->lines, $self->window->cols - $label_width;
+        my $self = shift;
+        my $ribbon = $self->{ribbon};
+        my $label_width = $ribbon->cols;
+        return 0, 0, $self->window->lines, $label_width,
+               0, $label_width, $self->window->lines, $self->window->cols - $label_width;
 }
 
 sub _window_position_right {
-	my $self = shift;
-	my $ribbon = $self->{ribbon};
-	my $label_width = $ribbon->cols;
-	return 0, $self->window->cols - $label_width, $self->window->lines, $label_width,
-	       0, 0, $self->window->lines, $self->window->cols - $label_width;
+        my $self = shift;
+        my $ribbon = $self->{ribbon};
+        my $label_width = $ribbon->cols;
+        return 0, $self->window->cols - $label_width, $self->window->lines, $label_width,
+               0, 0, $self->window->lines, $self->window->cols - $label_width;
 }
 
 sub _window_position_top {
@@ -171,60 +173,60 @@ sub _window_position_bottom {
 }
 
 sub on_style_changed_values {
-	my $self = shift;
-	my %values = @_;
+        my $self = shift;
+        my %values = @_;
 
-	if( grep { $_ =~ m/^ribbon_/ } keys %values ) {
-		$self->{ribbon}->set_pen( $self->get_style_pen("ribbon"));
-	}
+        if( grep { $_ =~ m/^ribbon_/ } keys %values ) {
+                $self->{ribbon}->set_pen( $self->get_style_pen("ribbon"));
+        }
 }
 
 sub reshape {
-	my $self = shift;
-	my $window = $self->window or return;
-	my $tab_position = $self->tab_position;
-	my @positions = $self->${\"_window_position_$tab_position"}();
-	if( my $ribbon_window = $self->{ribbon}->window ) {
-		$ribbon_window->change_geometry( @positions[0..3] );
-	}
-	else {
-		my $ribbon_window = $window->make_sub( @positions[0..3] );
-		$self->{ribbon}->set_window( $ribbon_window );
-	}
-	$self->{child_window_geometry} = [ @positions[4..7] ];
-	foreach my $tab ( $self->{ribbon}->tabs ) {
-		my $child = $tab->widget;
-		if( my $child_window = $child->window ) {
-			$child_window->change_geometry( @positions[4..7] );
-		}
-		else {
-			$child_window = $self->_new_child_window( $child == $self->active_tab->widget );
-			$child->set_window($child_window);
-		}
-	}
+        my $self = shift;
+        my $window = $self->window or return;
+        my $tab_position = $self->tab_position;
+        my @positions = $self->${\"_window_position_$tab_position"}();
+        if( my $ribbon_window = $self->{ribbon}->window ) {
+                $ribbon_window->change_geometry( @positions[0..3] );
+        }
+        else {
+                my $ribbon_window = $window->make_sub( @positions[0..3] );
+                $self->{ribbon}->set_window( $ribbon_window );
+        }
+        $self->{child_window_geometry} = [ @positions[4..7] ];
+        foreach my $tab ( $self->{ribbon}->tabs ) {
+                my $child = $tab->widget;
+                if( my $child_window = $child->window ) {
+                        $child_window->change_geometry( @positions[4..7] );
+                }
+                else {
+                        $child_window = $self->_new_child_window( $child == $self->active_tab->widget );
+                        $child->set_window($child_window);
+                }
+        }
 }
 
 sub _new_child_window
 {
-	my $self = shift;
-	my ( $visible ) = @_;
+        my $self = shift;
+        my ( $visible ) = @_;
 
-	my $window = $self->window or return undef;
+        my $window = $self->window or return undef;
 
-	my $child_window = $window->make_hidden_sub( @{ $self->{child_window_geometry} } );
-	$child_window->show if $visible;
+        my $child_window = $window->make_hidden_sub( @{ $self->{child_window_geometry} } );
+        $child_window->show if $visible;
 
-	return $child_window;
+        return $child_window;
 }
 
 sub window_lost {
-	my $self = shift;
-	$self->SUPER::window_lost(@_);
-	$_->widget->set_window(undef) for $self->{ribbon}->tabs;
+        my $self = shift;
+        $self->SUPER::window_lost(@_);
+        $_->widget->set_window(undef) for $self->{ribbon}->tabs;
 
-	undef $self->{child_window_geometry};
+        undef $self->{child_window_geometry};
 
-	$self->{ribbon}->set_window(undef);
+        $self->{ribbon}->set_window(undef);
 }
 
 =head2 tab_position
@@ -234,45 +236,45 @@ Accessor for the tab position (top, left, right, bottom).
 =cut
 
 sub tab_position {
-	my $self = shift;
-	if(@_) {
-		my $pos = shift;
-		my $orientation = ( $pos eq "top" or $pos eq "bottom" ) ? "horizontal" :
-				  ( $pos eq "left" or $pos eq "right" ) ? "vertical" :
-				  croak "Unrecognised value for ->tab_position: $pos";
+        my $self = shift;
+        if(@_) {
+                my $pos = shift;
+                my $orientation = ( $pos eq "top" or $pos eq "bottom" ) ? "horizontal" :
+                                  ( $pos eq "left" or $pos eq "right" ) ? "vertical" :
+                                  croak "Unrecognised value for ->tab_position: $pos";
 
-		if( !$self->{ribbon} or $self->{ribbon}->orientation ne $orientation ) {
-			my %args = (
-				tabbed => $self,
-				tab_position => $pos,
-			);
-			if( my $old_ribbon = $self->{ribbon} ) {
-				$old_ribbon->set_window( undef );
-				$args{tabs} = [ $old_ribbon->tabs ];
-				$args{active_tab_index} = $old_ribbon->active_tab_index;
-				$args{pen}  = $old_ribbon->pen;
-				$args{active_pen} = $old_ribbon->active_pen;
-				undef $self->{ribbon};
-			}
-			$self->{ribbon} = $self->RIBBON_CLASS->new_for_orientation(
-				$orientation, %args
-			);
-			$self->{ribbon}->set_pen($args{pen}) if $args{pen};
-		}
+                if( !$self->{ribbon} or $self->{ribbon}->orientation ne $orientation ) {
+                        my %args = (
+                                tabbed => $self,
+                                tab_position => $pos,
+                        );
+                        if( my $old_ribbon = $self->{ribbon} ) {
+                                $old_ribbon->set_window( undef );
+                                $args{tabs} = [ $old_ribbon->tabs ];
+                                $args{active_tab_index} = $old_ribbon->active_tab_index;
+                                $args{pen}  = $old_ribbon->pen;
+                                $args{active_pen} = $old_ribbon->active_pen;
+                                undef $self->{ribbon};
+                        }
+                        $self->{ribbon} = $self->RIBBON_CLASS->new_for_orientation(
+                                $orientation, %args
+                        );
+                        $self->{ribbon}->set_pen($args{pen}) if $args{pen};
+                }
 
-		$self->{tab_position} = $pos;
-		undef $self->{child_window_geometry};
+                $self->{tab_position} = $pos;
+                undef $self->{child_window_geometry};
 
-		$self->reshape if $self->window;
-		$self->redraw;
-	}
-	return $self->{tab_position};
+                $self->reshape if $self->window;
+                $self->redraw;
+        }
+        return $self->{tab_position};
 }
 
 sub _tabs_changed {
-	my $self = shift;
-	$self->reshape if $self->window;
-	$self->{ribbon}->redraw if $self->{ribbon}->window;
+        my $self = shift;
+        $self->reshape if $self->window;
+        $self->{ribbon}->redraw if $self->{ribbon}->window;
 }
 
 =head2 active_tab_index
@@ -309,16 +311,16 @@ Remaining form a hash:
 =cut
 
 sub add_tab {
-	my $self = shift;
-	my ($child, %opts) = @_;
+        my $self = shift;
+        my ($child, %opts) = @_;
 
-	my $ribbon = $self->{ribbon};
+        my $ribbon = $self->{ribbon};
 
-	my $tab = $self->TAB_CLASS->new( $self, widget => $child, %opts );
+        my $tab = $self->TAB_CLASS->new( $self, widget => $child, %opts );
 
-	$ribbon->append_tab( $tab );
+        $ribbon->append_tab( $tab );
 
-	return $tab;
+        return $tab;
 }
 
 =head2 remove_tab
@@ -371,40 +373,43 @@ Switch to the previous tab.
 sub prev_tab { shift->{ribbon}->prev_tab }
 
 sub child_resized {
-	my $self = shift;
-	$self->reshape;
+        my $self = shift;
+        $self->reshape;
 }
 
 sub on_key {
-	my $self = shift;
-	my ($type, $str, $key) = @_;
+        my $self = shift;
+        my ($ev) = @_;
 
-	return 1 if $self->{ribbon}->on_key(@_);
+        return 1 if $self->{ribbon}->on_key(@_);
 
-	if($type eq 'key' && $str eq 'C-PageUp') {
-		$self->prev_tab;
-		return 1;
-	}
-	if($type eq 'key' && $str eq 'C-PageDown') {
-		$self->next_tab;
-		return 1;
-	}
-	if($type eq 'key' && $str =~ m/^M-(\d)$/ ) {
-		my $index = $1 - 1;
-		$self->activate_tab( $index ) if $index <= $self->{ribbon}->tabs;
-		return 1;
-	}
-	if($type eq 'key' && $str eq 'Tab') {
-		my $target = $self->tab;
-		unless($target) {
-			$target = $self;
-			$target = $target->parent while $target->parent;
-		}
-		$target->window->focus(0,0) if $target->window;
-		$target->children_changed if $target->can('children_changed');
-		return 1;
-	}
-	return 0;
+        return 0 unless $ev->type eq "key";
+
+        my $str = $ev->str;
+        if($str eq 'C-PageUp') {
+                $self->prev_tab;
+                return 1;
+        }
+        if($str eq 'C-PageDown') {
+                $self->next_tab;
+                return 1;
+        }
+        if($str =~ m/^M-(\d)$/ ) {
+                my $index = $1 - 1;
+                $self->activate_tab( $index ) if $index <= $self->{ribbon}->tabs;
+                return 1;
+        }
+        if($str eq 'Tab') {
+                my $target = $self->tab;
+                unless($target) {
+                        $target = $self;
+                        $target = $target->parent while $target->parent;
+                }
+                $target->window->focus(0,0) if $target->window;
+                $target->children_changed if $target->can('children_changed');
+                return 1;
+        }
+        return 0;
 }
 
 package Tickit::Widget::Tabbed::Tab;
@@ -421,16 +426,16 @@ C<active_tab>.
 =cut
 
 sub new {
-	my $class = shift;
-	my ( $tabbed, %args ) = @_;
-	my $self = bless {
-		tabbed => $tabbed,
-		widget => $args{widget},
-		label  => $args{label},
-		active => 0,
-	}, $class;
-	weaken( $self->{tabbed} );
-	return $self;
+        my $class = shift;
+        my ( $tabbed, %args ) = @_;
+        my $self = bless {
+                tabbed => $tabbed,
+                widget => $args{widget},
+                label  => $args{label},
+                active => 0,
+        }, $class;
+        weaken( $self->{tabbed} );
+        return $self;
 }
 
 =head2 index
@@ -440,8 +445,8 @@ Returns the 0-based index of this tab
 =cut
 
 sub index {
-	my $self = shift;
-	return $self->{tabbed}->{ribbon}->_tab2index( $self );
+        my $self = shift;
+        return $self->{tabbed}->{ribbon}->_tab2index( $self );
 }
 
 =head2 widget
@@ -459,8 +464,8 @@ Returns the current label text
 =cut
 
 sub label_width {
-	my $self = shift;
-	return $self->{label_width} //= textwidth( $self->{label} );
+        my $self = shift;
+        return $self->{label_width} //= textwidth( $self->{label} );
 }
 
 sub label { shift->{label} }
@@ -472,10 +477,10 @@ Set new label text for the tab
 =cut
 
 sub set_label {
-	my $self = shift;
-	( $self->{label} ) = @_;
-	undef $self->{label_width};
-	$self->{tabbed}->_tabs_changed if $self->{tabbed};
+        my $self = shift;
+        ( $self->{label} ) = @_;
+        undef $self->{label_width};
+        $self->{tabbed}->_tabs_changed if $self->{tabbed};
 }
 
 =head2 is_active
@@ -485,8 +490,8 @@ Returns true if this tab is the currently active one
 =cut
 
 sub is_active {
-	my $self = shift;
-	return $self->{tabbed}->active_tab == $self;
+        my $self = shift;
+        return $self->{tabbed}->active_tab == $self;
 }
 
 =head2 activate
@@ -496,20 +501,20 @@ Activate this tab
 =cut
 
 sub activate {
-	my $self = shift;
-	$self->{tabbed}->activate_tab( $self );
+        my $self = shift;
+        $self->{tabbed}->activate_tab( $self );
 }
 
 sub _activate {
-	my $self = shift;
-	$self->widget->window->show if $self->widget->window;
-	$self->${\$self->{on_activated}}() if $self->{on_activated};
+        my $self = shift;
+        $self->widget->window->show if $self->widget->window;
+        $self->${\$self->{on_activated}}() if $self->{on_activated};
 }
 
 sub _deactivate {
-	my $self = shift;
-	$self->${\$self->{on_deactivated}}() if $self->{on_deactivated};
-	$self->widget->window->hide if $self->widget->window;
+        my $self = shift;
+        $self->${\$self->{on_deactivated}}() if $self->{on_deactivated};
+        $self->widget->window->hide if $self->widget->window;
 }
 
 =head2 set_on_activated
@@ -520,8 +525,8 @@ Set a callback or method name to invoke when the tab is activated
 
 sub set_on_activated
 {
-	my $self = shift;
-	( $self->{on_activated} ) = @_;
+        my $self = shift;
+        ( $self->{on_activated} ) = @_;
 }
 
 =head2 set_on_deactivated
@@ -532,8 +537,8 @@ Set a callback or method name to invoke when the tab is deactivated
 
 sub set_on_deactivated
 {
-	my $self = shift;
-	( $self->{on_deactivated} ) = @_;
+        my $self = shift;
+        ( $self->{on_deactivated} ) = @_;
 }
 
 =head2 pen
@@ -545,26 +550,26 @@ Returns the C<Tickit::Pen> used to draw the label
 sub _has_pen { defined shift->{pen} }
 
 sub pen {
-	my $self = shift;
-	return $self->{pen} ||= do {
-		my $pen = Tickit::Pen->new;
-		$pen->add_on_changed( $self );
-		$pen
-	};
+        my $self = shift;
+        return $self->{pen} ||= do {
+                my $pen = Tickit::Pen->new;
+                $pen->add_on_changed( $self );
+                $pen
+        };
 }
 
 sub on_pen_changed {
-	my $self = shift;
-	$self->{tabbed}->_tabs_changed if $self->{tabbed};
+        my $self = shift;
+        $self->{tabbed}->_tabs_changed if $self->{tabbed};
 }
 
 sub on_mouse {
-	my $self = shift;
-	my ( $ev, $button, $line, $col ) = @_;
+        my $self = shift;
+        my ( $type, $button, $line, $col ) = @_;
 
-	return 0 unless $ev eq "press" && $button == 1;
-	$self->{tabbed}->activate_tab( $self );
-	return 1;
+        return 0 unless $type eq "press" && $button == 1;
+        $self->{tabbed}->activate_tab( $self );
+        return 1;
 }
 
 1;
@@ -582,16 +587,16 @@ constructor having the following behaviour:
 
  sub new
  {
-	 my $class = shift;
-	 my ( $tabbed, %args ) = @_;
+         my $class = shift;
+         my ( $tabbed, %args ) = @_;
 
-	 ...
+         ...
 
-	 my $self = $class->SUPER::new( $tabbed, %args );
+         my $self = $class->SUPER::new( $tabbed, %args );
 
-	 ...
+         ...
 
-	 return $self;
+         return $self;
  }
 
 Arrange for this class to be used by the tabbed widget either by passing its
@@ -599,7 +604,7 @@ name as a constructor argument called C<tab_class>, or by overriding a method
 called C<TAB_CLASS>.
 
  my $tabbed = Tickit::Widget::Tabbed->new(
-	 tab_class => "Tab::Class::Name"
+         tab_class => "Tab::Class::Name"
  );
 
 or
@@ -635,8 +640,8 @@ For more detail, see the documentation in L<Tickit::Widget::Tabbed::Ribbon>.
 
 =head1 AUTHOR
 
-Tom Molesworth <cpan@entitymodel.com>
+Tom Molesworth <cpan@entitymodel.com>, Paul Evans <leonerd@leonerd.org.uk>
 
 =head1 LICENSE
 
-Copyright Tom Molesworth 2011. Licensed under the same terms as Perl itself.
+Copyright Tom Molesworth 2011; Paul Evans 2014. Licensed under the same terms as Perl itself.

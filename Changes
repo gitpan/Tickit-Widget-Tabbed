@@ -1,5 +1,10 @@
 Revision history for Tickit-Widget-Tabbed
 
+0.013     2014-04-03 23:45:05 UTC
+          [CHANGES]
+           * Use Tickit 0.32-style structures for key/mouse events
+           * Prepare for Tickit 0.44's whole-tree RB rendering order
+
 0.012     2014-04-01 22:53:51 UTC
           [CHANGES]
            * Use new Window expose with_rb and mouse with_ev events from

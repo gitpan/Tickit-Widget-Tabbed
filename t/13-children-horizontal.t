@@ -1,8 +1,9 @@
 #!/usr/bin/perl
 
 use strict;
+use warnings;
 
-use Test::More tests => 3;
+use Test::More;
 
 use Tickit::Test;
 
@@ -40,3 +41,5 @@ is_display( [ [TEXT("[",fg=>7,bg=>4), TEXT("tab",fg=>14,bg=>4), TEXT("]",fg=>7,b
               [TEXT("Static")],
               [TEXT("More static")] ],
             'Display after $vbox->add again' );
+
+done_testing;

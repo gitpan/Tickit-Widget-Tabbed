@@ -1,8 +1,9 @@
 #!/usr/bin/perl
 
 use strict;
+use warnings;
 
-use Test::More tests => 10;
+use Test::More;
 
 use Tickit::Test;
 
@@ -64,3 +65,5 @@ is_display( [ [TEXT(" tab1[",fg=>7,bg=>4), TEXT("tab2",fg=>14,bg=>4), TEXT("]tab
             'Display after press mouse 1 @(0,7)' );
 
 is( $widget->active_tab_index, 1, '->active_tab_index after press mouse 1 @(0,7)' );
+
+done_testing;

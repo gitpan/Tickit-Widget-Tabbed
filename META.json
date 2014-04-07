@@ -23,7 +23,7 @@
       "build" : {
          "requires" : {
             "Test::Identity" : "0",
-            "Test::More" : "0",
+            "Test::More" : "0.88",
             "Test::Refcount" : "0",
             "Tickit::Test" : "0.43",
             "Tickit::Widget::Static" : "0",
@@ -40,6 +40,7 @@
          "requires" : {
             "List::Util" : "0",
             "Scalar::Util" : "0",
+            "Tickit::ContainerWidget" : "0.44",
             "Tickit::Widget" : "0.36",
             "Tickit::Window" : "0.28",
             "parent" : "0",
@@ -48,5 +49,5 @@
       }
    },
    "release_status" : "stable",
-   "version" : "0.013"
+   "version" : "0.014"
 }

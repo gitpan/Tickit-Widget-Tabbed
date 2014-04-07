@@ -1,8 +1,9 @@
 #!/usr/bin/perl
 
 use strict;
+use warnings;
 
-use Test::More tests => 2;
+use Test::More;
 
 use Tickit::Test;
 
@@ -27,3 +28,5 @@ flush_tickit;
 is_display( [ [TEXT("[",fg=>7,bg=>4), TEXT("Late tab",fg=>14,bg=>4), TEXT("]",fg=>7,bg=>4), TEXT("",bg=>4)],
               [TEXT("Late widget")] ],
             'Display after ->add_tab' );
+
+done_testing;

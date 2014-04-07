@@ -1,8 +1,9 @@
 #!/usr/bin/perl
 
 use strict;
+use warnings;
 
-use Test::More tests => 4;
+use Test::More;
 
 use Tickit::Test;
 
@@ -15,6 +16,9 @@ my $widget = Tickit::Widget::Tabbed->new( tab_position => "top" );
 
 $widget->add_tab( Tickit::Widget::Static->new( text => "Widget" ), label => "tab" );
 my $tab = $widget->add_tab( Tickit::Widget::Static->new( text => "Widget 2" ), label => "othertab" );
+
+is( $widget->lines,  2, '$widget->lines' ); # 1 for Widgets, 1 for ribbon
+is( $widget->cols,  14, '$widget->cols' );  # 1 + 3 + 1 + 8 + 1
 
 $widget->set_window( $win );
 
@@ -47,3 +51,5 @@ flush_tickit;
 is_display( [ [TEXT("[",fg=>7,bg=>2), TEXT("tab",fg=>14,bg=>2,b=>1), TEXT("]",fg=>7,bg=>2), TEXT("othertab",fg=>1,bg=>2), TEXT(" ",fg=>7,bg=>2), TEXT("",bg=>2)],
               [TEXT("Widget")] ],
             'Display after tab pen ->chattr' );
+
+done_testing;

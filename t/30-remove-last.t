@@ -1,8 +1,9 @@
 #!/usr/bin/perl
 
 use strict;
+use warnings;
 
-use Test::More tests => 2;
+use Test::More;
 
 use Tickit::Test;
 
@@ -29,3 +30,5 @@ flush_tickit;
 is_display( [ [TEXT("",bg=>4)],
               [TEXT("")] ],
             'Display blanked after removing last tab' );
+
+done_testing;

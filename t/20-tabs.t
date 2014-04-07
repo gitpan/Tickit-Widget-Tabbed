@@ -1,8 +1,9 @@
 #!/usr/bin/perl
 
 use strict;
+use warnings;
 
-use Test::More tests => 44;
+use Test::More;
 use Test::Identity;
 use Test::Refcount;
 
@@ -143,3 +144,5 @@ is_display( [ [TEXT(" tab0[",fg=>7,bg=>4), TEXT("tab2",fg=>14,bg=>4), TEXT("]",f
 $widget->set_window( undef );
 
 is_oneref( $widget, '$widget still has refcount 1 before EOF' );
+
+done_testing;

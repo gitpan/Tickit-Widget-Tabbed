@@ -1,8 +1,9 @@
 #!/usr/bin/perl
 
 use strict;
+use warnings;
 
-use Test::More tests => 2;
+use Test::More;
 
 use Tickit::Test;
 
@@ -30,3 +31,5 @@ is_display( [ [TEXT("label1",fg=>14,bg=>4), TEXT(" >",fg=>7,bg=>4), TEXT("Widget
               [TEXT("label2  ",fg=>7,bg=>4)],
               [TEXT("label3  ",fg=>7,bg=>4)] ],
             'Display after ->tab_position change orientation' );
+
+done_testing;

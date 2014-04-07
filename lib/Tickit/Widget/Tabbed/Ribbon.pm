@@ -11,7 +11,7 @@ use warnings;
 use base qw( Tickit::Widget );
 Tickit::Window->VERSION( '0.42' );
 
-our $VERSION = '0.013';
+our $VERSION = '0.014';
 
 use Scalar::Util qw( weaken );
 use Tickit::Utils qw( textwidth );
@@ -322,7 +322,7 @@ sub new {
 sub lines { 1 }
 sub cols {
         my $self = shift;
-        return sum(map { $_->label_width + 1 } $self->tabs);
+        return sum(map { $_->label_width + 1 } $self->tabs) + 1;
 }
 
 sub reshape {

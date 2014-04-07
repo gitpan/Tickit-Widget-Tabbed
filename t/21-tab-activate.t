@@ -1,8 +1,9 @@
 #!/usr/bin/perl
 
 use strict;
+use warnings;
 
-use Test::More tests => 5;
+use Test::More;
 use Test::Identity;
 
 use Tickit::Widget::Static;
@@ -38,3 +39,5 @@ $tabs[0]->set_on_deactivated( sub { $deactivated++ } );
 $widget->activate_tab( 1 );
 
 is( $deactivated, 1, '$deactivated after ->activate_tab elsewhere' );
+
+done_testing;

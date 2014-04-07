@@ -1,8 +1,9 @@
 #!/usr/bin/perl
 
 use strict;
+use warnings;
 
-use Test::More tests => 2;
+use Test::More;
 
 use Tickit::Test;
 
@@ -23,6 +24,8 @@ my $tab = $widget->add_tab(
 isa_ok( $tab, "TestWidget::Tab", '$tab from custom tab_class' );
 
 is( $tab->custom_attr, 123, '$tab->custom_attr' );
+
+done_testing;
 
 package TestWidget::Tab;
 use base qw( Tickit::Widget::Tabbed::Tab );

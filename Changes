@@ -1,5 +1,11 @@
 Revision history for Tickit-Widget-Tabbed
 
+0.014     2014-04-07 19:08:55
+          [CHANGES]
+           * Rename ->tab to ->active_tab_widget
+           * Subclass from ContainerWidget properly
+           * Provide accurate ->lines and ->cols methods
+
 0.013     2014-04-03 23:45:05 UTC
           [CHANGES]
            * Use Tickit 0.32-style structures for key/mouse events

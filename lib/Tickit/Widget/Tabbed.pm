@@ -8,7 +8,7 @@ package Tickit::Widget::Tabbed;
 
 use strict;
 use warnings;
-use parent qw(Tickit::Widget);
+use parent qw(Tickit::ContainerWidget);
 BEGIN {
         Tickit::Widget->VERSION("0.12");
         Tickit::Window->VERSION("0.23");
@@ -21,7 +21,7 @@ use List::Util qw(max);
 
 use Tickit::Widget::Tabbed::Ribbon;
 
-our $VERSION = '0.013';
+our $VERSION = '0.014';
 
 =head1 NAME
 
@@ -91,10 +91,6 @@ use constant WIDGET_PEN_FROM_STYLE => 1;
 =head1 METHODS
 
 =cut
-
-sub lines { 1 }
-
-sub cols { 1 }
 
 sub TAB_CLASS { shift->{tab_class} || "Tickit::Widget::Tabbed::Tab" }
 sub RIBBON_CLASS { shift->{ribbon_class} || "Tickit::Widget::Tabbed::Ribbon" }
@@ -206,6 +202,59 @@ sub reshape {
         }
 }
 
+sub _max_child_lines
+{
+        my $self = shift;
+        my $ribbon = $self->{ribbon};
+        return max( 1, map { $_->widget->requested_lines } $ribbon->tabs );
+}
+
+sub _max_child_cols
+{
+        my $self = shift;
+        my $ribbon = $self->{ribbon};
+        return max( 1, map { $_->widget->requested_cols } $ribbon->tabs );
+}
+
+sub lines
+{
+        my $self = shift;
+        my $ribbon = $self->{ribbon};
+
+        if( $ribbon->orientation eq "horizontal" ) {
+                return $ribbon->lines + $self->_max_child_lines;
+        }
+        else {
+                return max( $ribbon->lines, $self->_max_child_lines );
+        }
+}
+
+sub cols
+{
+        my $self = shift;
+        my $ribbon = $self->{ribbon};
+
+        if( $ribbon->orientation eq "horizontal" ) {
+                return max( $ribbon->cols, $self->_max_child_cols );
+        }
+        else {
+                return $ribbon->cols + $self->_max_child_cols;
+        }
+}
+
+# All the child widgets
+sub children {
+        my $self = shift;
+        my $ribbon = $self->{ribbon};
+        return $ribbon, map { $_->widget } $ribbon->tabs;
+}
+
+# The only focusable child widget is the active one
+sub children_for_focus {
+        my $self = shift;
+        return $self->active_tab_widget;
+}
+
 sub _new_child_window
 {
         my $self = shift;
@@ -293,6 +342,18 @@ Returns the currently-active tab as a tab object. See below.
 
 sub active_tab { shift->{ribbon}->active_tab }
 
+=head2 active_tab_widget
+
+Returns the widget in the currently active tab.
+
+=cut
+
+# Old name
+*tab = \&active_tab_widget;
+sub active_tab_widget {
+        my $self = shift; $self->active_tab && $self->active_tab->widget
+}
+
 =head2 add_tab
 
 Add a new tab to this tabbed widget. Returns an object representing the tab;
@@ -339,14 +400,6 @@ positions.
 =cut
 
 sub move_tab { shift->{ribbon}->move_tab( @_ ) }
-
-=head2 tab
-
-Returns the widget in the currently active tab.
-
-=cut
-
-sub tab { my $self = shift; $self->active_tab && $self->active_tab->widget }
 
 =head2 activate_tab
 
@@ -397,16 +450,6 @@ sub on_key {
         if($str =~ m/^M-(\d)$/ ) {
                 my $index = $1 - 1;
                 $self->activate_tab( $index ) if $index <= $self->{ribbon}->tabs;
-                return 1;
-        }
-        if($str eq 'Tab') {
-                my $target = $self->tab;
-                unless($target) {
-                        $target = $self;
-                        $target = $target->parent while $target->parent;
-                }
-                $target->window->focus(0,0) if $target->window;
-                $target->children_changed if $target->can('children_changed');
                 return 1;
         }
         return 0;

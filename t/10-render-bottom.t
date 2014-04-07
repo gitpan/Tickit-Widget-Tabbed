@@ -1,8 +1,9 @@
 #!/usr/bin/perl
 
 use strict;
+use warnings;
 
-use Test::More tests => 8;
+use Test::More;
 
 use Tickit::Test;
 
@@ -129,3 +130,5 @@ is_display( [ [TEXT("Widget 1")],
                TEXT("]tab2 newtab ",fg=>7,bg=>4),
                TEXT("",bg=>4)] ],
             'Display after ->add_tab' );
+
+done_testing;

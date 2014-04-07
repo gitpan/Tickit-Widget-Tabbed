@@ -1,8 +1,9 @@
 #!/usr/bin/perl
 
 use strict;
+use warnings;
 
-use Test::More tests => 4;
+use Test::More;
 
 use Tickit::Test;
 
@@ -60,3 +61,5 @@ is_display( [ [TEXT("tab4      ",fg=>7,bg=>4), TEXT("Widget 7")],
               [TEXT("tab7",fg=>14,bg=>4), TEXT(" >>>>>",fg=>7,bg=>4)],
               [TEXT("tab8      ",fg=>7,bg=>4)] ],
             'Display scrolls ribbon to active tab' );
+
+done_testing;

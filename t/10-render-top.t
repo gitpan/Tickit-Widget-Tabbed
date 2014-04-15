@@ -114,11 +114,13 @@ is_termlog( {
                    SETBG(4),
                    ERASECH(58) ],
 
-        "1,0" => [ SETPEN,
-                   PRINT("Widget 1"),
-                   SETBG(undef),
-                   ERASECH(72) ],
-        ( map { +"$_,0" => [ SETBG(undef), ERASECH(80) ] } 2 .. 24 ),
+        # Tickit::Window 0.45 optimised away ->expose on invisible windows
+        ( $Tickit::Window::VERSION >= '0.45' ? () :
+                ( "1,0" => [ SETPEN,
+                             PRINT("Widget 1"),
+                             SETBG(undef),
+                             ERASECH(72) ],
+                  ( map { +"$_,0" => [ SETBG(undef), ERASECH(80) ] } 2 .. 24 ) ) ),
         }, 'Termlog after ->add_tab' );
 
 is_display( [ [TEXT(" tab0[",fg=>7,bg=>4),

@@ -1,5 +1,10 @@
 Revision history for Tickit-Widget-Tabbed
 
+0.015     2014-04-15 02:41:29
+          [CHANGES]
+           * Prepare unit tests for Tickit 0.45's optimisation away of
+             ->expose on invisible windows
+
 0.014     2014-04-07 19:08:55
           [CHANGES]
            * Rename ->tab to ->active_tab_widget

@@ -97,11 +97,13 @@ $widget->add_tab( Tickit::Widget::Static->new( text => "Another static" ), label
 flush_tickit;
 
 is_termlog( {
-        "0,0" => [ SETPEN,
-                   PRINT("Widget 1"),
-                   SETBG(undef),
-                   ERASECH(72) ],
-        ( map { +"$_,0" => [ SETBG(undef), ERASECH(80) ] } 1 .. 23 ),
+        # Tickit::Window 0.45 optimised away ->expose on invisible windows
+        ( $Tickit::Window::VERSION >= '0.45' ? () :
+                ( "0,0" => [ SETPEN,
+                           PRINT("Widget 1"),
+                           SETBG(undef),
+                           ERASECH(72) ],
+                  ( map { +"$_,0" => [ SETBG(undef), ERASECH(80) ] } 1 .. 23 ) ) ),
 
         "24,0" => [ SETPEN(fg => 7,bg => 4),
                     PRINT(" "),

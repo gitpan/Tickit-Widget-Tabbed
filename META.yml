@@ -31,4 +31,4 @@ requires:
   Tickit::Window: '0.28'
   parent: '0'
   perl: '5.010'
-version: '0.015'
+version: '0.016'

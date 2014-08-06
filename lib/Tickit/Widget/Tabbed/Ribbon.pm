@@ -11,7 +11,7 @@ use warnings;
 use base qw( Tickit::Widget );
 Tickit::Window->VERSION( '0.42' );
 
-our $VERSION = '0.015';
+our $VERSION = '0.016';
 
 use Scalar::Util qw( weaken );
 use Tickit::Utils qw( textwidth );
@@ -309,7 +309,7 @@ package Tickit::Widget::Tabbed::Ribbon::horizontal;
 use base qw( Tickit::Widget::Tabbed::Ribbon );
 use constant orientation => "horizontal";
 
-use List::Util qw( sum );
+use List::Util qw( sum0 );
 
 sub new {
         my $class = shift;
@@ -322,7 +322,7 @@ sub new {
 sub lines { 1 }
 sub cols {
         my $self = shift;
-        return sum(map { $_->label_width + 1 } $self->tabs) + 1;
+        return sum0(map { $_->label_width + 1 } $self->tabs) + 1;
 }
 
 sub reshape {

@@ -21,7 +21,7 @@ use List::Util qw(max);
 
 use Tickit::Widget::Tabbed::Ribbon;
 
-our $VERSION = '0.015';
+our $VERSION = '0.016';
 
 =head1 NAME
 

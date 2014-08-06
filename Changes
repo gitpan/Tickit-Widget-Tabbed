@@ -1,5 +1,10 @@
 Revision history for Tickit-Widget-Tabbed
 
+0.016     2014-08-06 16:10:44
+          [BUGFIXES]
+           * Use List::Util::sum0 instead of sum so as not to print undef
+             warnings when there are no tabs defined
+
 0.015     2014-04-15 02:41:29
           [CHANGES]
            * Prepare unit tests for Tickit 0.45's optimisation away of
